@@ -89,34 +89,18 @@ plot(forest1)
 
 
 
+######################### MAP ###################################################
+
 # Get raster data ready for plotting
 plot.data <- gplot_data(forest1)
-
-g <- ggplot() + 
-  geom_raster(data = plot.data, aes(x = x, y = y, fill = value)) +
-  # geom_sf(data = temp) + 
-  # scale_fill_manual(values = palette, na.value = NA) +
-  theme_bw(base_size = 12) + 
-  theme(panel.grid.major = element_blank(),
-        panel.grid.minor = element_blank(),# blend lat/long into background
-        panel.border = element_rect(fill = NA, color = "black", size = 0.5),
-        # panel.background = element_rect(fill = "),
-        axis.title = element_blank(),
-        legend.background = element_rect(fill = "white", color = "black", size = 0,5))
-g
-
-
-
-
-
-for.type.MA <- for.ne
-
 
 
 ## FIXME: ADD SCALE BAR & N-ARROW
 # For scale bar and N-arrow
-# install.packages('ggsn')
-# library(ggsn)
+install.packages('ggsn')
+library(ggsn)
+
+northSymbols()
 
 bbox
 
@@ -125,12 +109,8 @@ g <- ggplot() +
   geom_raster(data = plot.data[!is.na(plot.data$value),], # exclude NA from being plotted
               aes(x = x, y = y, fill = value)) + # factor b/c it's continuous
   geom_sf(data = lakes, color = "#80d0ff", fill = "#e5f6ff", size = 0.5) + 
-  # geom_sf(data = eco.ne.dslv, color = "dark grey", fill = NA, size = 0.5) + #"#fcfcfc") +
-  # scale_fill_manual("Strata by forest type & ownership",
-  #                   values = palette,
-  #                   na.value = NA,
-  #                   labels = labels) +
-  guides(fill=guide_legend(ncol=2)) +
+  scale_fill_gradient(low = "#35B262", high = "#35B262") +
+  # guides(fill=guide_legend(ncol=2)) +
   coord_sf(xlim = c(-91836.6, 2255743),
            ylim = c(1962636, 3012405),
            # crs = st_crs(102003), # Albers Equal area # on means ne.reg won't plot??
@@ -141,17 +121,22 @@ g <- ggplot() +
         panel.border = element_rect(fill = NA, color = "black", size = 0.5),
         panel.background = element_rect(fill = "#e5f6ff"),
         axis.title = element_blank(),
-        legend.background = element_rect(fill = "white", color = "black", size = 0,5),
-        legend.justification=c("left", "top"), # which side oflegend position coords refer to
-        legend.position=c(0,1), 
-        legend.box.margin=ggplot2::margin(c(rep(5, 4))), # ggplot2 else draws from other package
-        legend.text=element_text(size=10),
-        legend.title = element_text(size=12)) #+
+        legend.position = "none",
+        plot.margin=unit(c(0.25,0.5,0.25,0.5),"cm"))   #trbl
+  
+g  
+
+
+# north(location = "topleft", scale = 0.1, symbol = 10,
+#       x.min = -91836.6, x.max = 2255743, y.min = 1962636, y.max = 3012405)
+
 # scalebar(location = "bottomright", dist = 100, dist_unit = "km",
 #          x.min = 1324033, x.max = 2257533,
 #          y.min = 2137911, y.max = 3012911)
 
-g
+
+
+
 
 # png("map_MAs_ownXfor_12.png", width = 480, height = 480, units = "px", bg = "white")
 # g
@@ -161,6 +146,16 @@ g
 # g
 # dev.off()
 
-pdf("map_MAs_ownXfor_12.pdf", width = 6, height = 6, bg = "white")
+# v <-1
+pdf(paste0("D:/Shared/BackedUp/Caitlin/CTradeOffsMap/forest_ne_grt_lakes_v", v, ".pdf"),
+    width = 6, height = 3, bg = "white") ; v <- v + 1
 g
 dev.off()
+
+# v <-1
+# png(paste0("D:/Shared/BackedUp/Caitlin/CTradeOffsMap/forest_ne_grt_lakes_v", v, ".png"),
+#     width = 480, height = 240, units = "px", bg = "white") ; v <- v + 1
+# g
+# dev.off()
+
+
